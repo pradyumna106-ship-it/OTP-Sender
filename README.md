@@ -1,7 +1,7 @@
 # OTP Sender – Spring Boot Application
 
 ## 📌 Overview
-The **OTP Sender Application** is a Spring Boot–based backend service designed to generate and send **One-Time Passwords (OTP)** to users for authentication and verification purposes. It supports sending OTPs via **Email** and/or **SMS**, making it suitable for login verification, password reset, and user onboarding workflows.
+The **OTP Sender Application** is a Spring Boot–based backend service designed to generate and send **One-Time Passwords (OTP)** to users for authentication and verification purposes. It supports sending OTPs via **Email**, making it suitable for login verification, password reset, and user onboarding workflows.
 
 ---
 
