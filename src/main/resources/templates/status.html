@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Status</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+	<a href="/" style="margin-top:15px; display:inline-block;">Go Back</a>
+
+    <div class="container">
+        <h3>Status</h3>
+
+        <label 
+            th:if="${status != null}" 
+            th:text="${status}" 
+            th:style="'color:' + ${color}">
+        </label>
+    </div>
+
+</body>
+</html>

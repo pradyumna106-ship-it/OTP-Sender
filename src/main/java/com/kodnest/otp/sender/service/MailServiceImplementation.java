@@ -16,26 +16,30 @@ import jakarta.mail.internet.MimeMessage;
 @Service
 public class MailServiceImplementation implements MailService {
 
-	@Autowired
-	MailRepository repo;
-	
-	@Autowired
-	JavaMailSender sender;
-	public void sendMail(Mail mail) {
-		// TODO Auto-generated method stub
-		String otp = String.format("%06d", new Random().nextInt(999999));
-		
-		MimeMessage msg = sender.createMimeMessage();
-		MimeMessageHelper mmh = new MimeMessageHelper(msg,"utf-8");
-		
-		try {
-			mmh.setTo(mail.getReceiver());
-			mmh.setSubject("OTP");
-			mmh.setText("use this OTP: " + otp);
-			sender.send(msg);
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}
-	}
+	 @Autowired private JavaMailSender sender;
+
+	    private String generatedOtp;
+
+	    public void sendMail(Mail mail) {
+
+	        generatedOtp = String.format("%06d", new Random().nextInt(999999));
+	        mail.setOtp(generatedOtp);   // store OTP
+
+	        MimeMessage msg = sender.createMimeMessage();
+	        MimeMessageHelper mmh = new MimeMessageHelper(msg, "utf-8");
+
+	        try {
+	            mmh.setTo(mail.getReceiver());
+	            mmh.setSubject("OTP");
+	            mmh.setText("Use this OTP: " + generatedOtp);
+	            sender.send(msg);
+	        } catch (MessagingException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    public boolean validateOtp(String userOtp) {
+	        return userOtp != null && userOtp.equals(generatedOtp);
+	    }
 
 }

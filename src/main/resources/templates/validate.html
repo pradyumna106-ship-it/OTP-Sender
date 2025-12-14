@@ -3,14 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <title>OTP Validator</title>
+<link rel="stylesheet" href="/style.css">
 </head>
 <body>
-	<h3>OTP verification</h3>
-	<form action="send" method="get">
-		<label>Enter OTP:</label>
-		<input type="text" name="otp"/>
-		<br><br>
-		<input type="submit" value="Validate">
+	<div class="container">
+    <h3>OTP Verification</h3>
+
+	<form action="validate-otp" method="post">
+	    <input type="text" name="otp" placeholder="Enter OTP" required>
+	    <input type="submit" value="Validate">
 	</form>
+	</div>
+
+
 </body>
 </html>
