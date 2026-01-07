@@ -17,6 +17,7 @@ import jakarta.mail.internet.MimeMessage;
 public class MailServiceImplementation implements MailService {
 
 	 @Autowired private JavaMailSender sender;
+	 @Autowired private MailRepository repo;
 
 	    private String generatedOtp;
 
@@ -32,6 +33,7 @@ public class MailServiceImplementation implements MailService {
 	            mmh.setTo(mail.getReceiver());
 	            mmh.setSubject("OTP");
 	            mmh.setText("Use this OTP: " + generatedOtp);
+	            repo.save(mail);
 	            sender.send(msg);
 	        } catch (MessagingException e) {
 	            e.printStackTrace();
