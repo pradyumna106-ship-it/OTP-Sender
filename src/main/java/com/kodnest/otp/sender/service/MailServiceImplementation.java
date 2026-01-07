@@ -1,5 +1,6 @@
 package com.kodnest.otp.sender.service;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,32 +17,44 @@ import jakarta.mail.internet.MimeMessage;
 @Service
 public class MailServiceImplementation implements MailService {
 
-	 @Autowired private JavaMailSender sender;
-	 @Autowired private MailRepository repo;
+	@Autowired
+    private JavaMailSender sender;
 
-	    private String generatedOtp;
+    @Autowired
+    private MailRepository repo;
 
-	    public void sendMail(Mail mail) {
+	@Override
+	public void sendMail(Mail mail) {
+		// TODO Auto-generated method stub
+		String otp = String.format("%06d", new SecureRandom().nextInt(1_000_000));
 
-	        generatedOtp = String.format("%06d", new Random().nextInt(999999));
-	        mail.setOtp(generatedOtp);   // store OTP
+	    mail.setOtp(otp);
+	    mail.setSubject("OTP Verification");
+	    mail.setBody("Use this OTP: " + otp);
 
-	        MimeMessage msg = sender.createMimeMessage();
-	        MimeMessageHelper mmh = new MimeMessageHelper(msg, "utf-8");
+	    try {
+	        MimeMessage message = sender.createMimeMessage();
+	        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-	        try {
-	            mmh.setTo(mail.getReceiver());
-	            mmh.setSubject("OTP");
-	            mmh.setText("Use this OTP: " + generatedOtp);
-	            repo.save(mail);
-	            sender.send(msg);
-	        } catch (MessagingException e) {
-	            e.printStackTrace();
-	        }
+	        helper.setTo(mail.getReceiver());
+	        helper.setSubject(mail.getSubject());
+	        helper.setText(mail.getBody(), false);
+
+	        // Send email FIRST
+	        sender.send(message);
+
+	        // Save ONLY after success
+	        repo.save(mail);
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("Mail sending failed", e);
 	    }
-
-	    public boolean validateOtp(String userOtp) {
-	        return userOtp != null && userOtp.equals(generatedOtp);
-	    }
-
+	}
+	@Override
+	public boolean validateOtp(String email, String userOtp) {
+		// TODO Auto-generated method stub
+		return repo.findTopByReceiverOrderByIdDesc(email)
+	            .map(mail -> mail.getOtp().equals(userOtp))
+	            .orElse(false);
+	}
 }
